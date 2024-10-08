@@ -14,13 +14,13 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
-    
+
       <Card className="mb-8 bg-white-900 text-black">
         <CardHeader>
           <CardTitle>Drift</CardTitle>
         </CardHeader>
         <CardContent>
-         
+
           <div className="flex justify-between mb-4">
             <div>
               <p className="text-sm text-gray-400">TVL</p>
@@ -32,13 +32,10 @@ export default function Home() {
             </div>
           </div>
           <Link href="/vault/1">
-          <Button>Provide liquidity</Button>
+            <Button>Provide liquidity</Button>
           </Link>
         </CardContent>
       </Card>
-      
-     
-      </div>
-    
+    </div>
   );
 }

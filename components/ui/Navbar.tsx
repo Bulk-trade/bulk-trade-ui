@@ -6,6 +6,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button"
 import dynamic from 'next/dynamic';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 const WalletMultiButtonDynamic = dynamic(
   async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
@@ -19,7 +20,8 @@ const Navbar = () => {
         <Link href="/" className="text-2xl font-bold text-black">BULK</Link>
         <div className="flex items-center space-x-4">
           <Link href="/" className="text-lg text-black">Vaults</Link>
-          <Button variant="secondary" className="bg-purple-600 text-white hover:bg-purple-700">Select Wallet</Button>
+          <WalletMultiButton />
+          {/* <Button variant="secondary" className="bg-purple-600 text-white hover:bg-purple-700">Select Wallet</Button> */}
         </div>
       </div>
     </nav>

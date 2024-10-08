@@ -1,16 +1,61 @@
 'use client'
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import dynamic from 'next/dynamic';
 import MetricCard from '@/components/ui/MetricCard';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 
 const TradingViewWidget = dynamic(() => import('@/components/ui/TradingViewWidget'), { ssr: false });
 
 export default function VaultPage() {
+
+  const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
+  const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleDeposit = async () => {
+    setLoading(true);
+    console.log('Deposit amount:', amount);
+    if (!publicKey) {
+      console.error("Wallet not connected");
+      return;
+    }
+
+    console.error("Wallet is connected", publicKey.toString());
+
+    try {
+      const recipientPubKey = new PublicKey('2kNBWVtUZHYXYEYHHnrhfxqH77LS7gPXGPs28NCSjtAe');
+
+      const transaction = new Transaction();
+      const sendSolInstruction = SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: recipientPubKey,
+        lamports: 0.0001 * LAMPORTS_PER_SOL,
+      });
+
+      transaction.add(sendSolInstruction);
+
+      const signature = await sendTransaction(transaction, connection);
+      console.log(`Transaction signature: ${signature}`);
+    } catch (error) {
+      console.error("Transaction failed", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleWithdraw = () => {
+    setLoading(true);
+    console.log('Withdraw amount:', amount);
+    // Add your withdraw logic here
+  };
+
   return (
     <main className="container mx-auto px-4 py-8">
       <Card className="mb-8 bg-white-900 border-gray-800">
@@ -43,9 +88,9 @@ export default function VaultPage() {
         <div className="lg:col-span-2">
           <Card className="bg-white-900">
             <CardContent>
-            <div className="h-[600px]">
-              <TradingViewWidget />
-            </div>
+              <div className="h-[600px]">
+                <TradingViewWidget />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -58,16 +103,38 @@ export default function VaultPage() {
             <TabsContent value="deposit">
               <Card className="bg-white-900 border-gray-800">
                 <CardContent className="pt-6">
-                  <Input placeholder="Amount" className="mb-4 bg-white-800 border-gray-700" />
-                  <Button className="w-full bg-white text-black hover:bg-white-200">Deposit</Button>
+                  <Input
+                    placeholder="Amount"
+                    className="mb-4 bg-white-800 border-gray-700"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                  <Button
+                    className="w-full bg-white text-black hover:bg-white-200"
+                    onClick={handleDeposit}
+                    disabled={loading}
+                  >
+                    {loading ? 'Processing...' : 'Deposit'}
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
             <TabsContent value="withdraw">
               <Card className="bg-white-900 border-gray-800">
                 <CardContent className="pt-6">
-                  <Input placeholder="Amount" className="mb-4 bg-white-800 border-gray-700" />
-                  <Button className="w-full bg-white text-black hover:bg-white-200">Withdraw</Button>
+                  <Input
+                    placeholder="Amount"
+                    className="mb-4 bg-white-800 border-gray-700"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                  <Button
+                    className="w-full bg-white text-black hover:bg-white-200"
+                    onClick={handleWithdraw}
+                    disabled={loading}
+                  >
+                    {loading ? 'Processing...' : 'Withdraw'}
+                  </Button>
                 </CardContent>
               </Card>
             </TabsContent>
