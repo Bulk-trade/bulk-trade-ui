@@ -8,16 +8,40 @@ import { Button } from "@/components/ui/button"
 import dynamic from 'next/dynamic';
 import MetricCard from '@/components/ui/MetricCard';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { BlockhashWithExpiryBlockHeight, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction, TransactionInstruction, TransactionMessage, TransactionSignature, VersionedTransaction } from '@solana/web3.js';
+import bs58 from 'bs58';
+import { USDC_DECIMAL, USDC_MINT } from '@/components/lib/utils';
+import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress, getOrCreateAssociatedTokenAccount } from '@solana/spl-token';
+import { SignerWalletAdapterProps } from '@solana/wallet-adapter-base';
+import { handleTransactionResponse, versionedTransactionSenderAndConfirmationWaiter } from '@/components/lib/transaction-sender';
 
 const TradingViewWidget = dynamic(() => import('@/components/ui/TradingViewWidget'), { ssr: false });
 
 export default function VaultPage() {
 
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, sendTransaction, signTransaction, wallet } = useWallet();
   const { connection } = useConnection();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
+  const supportedTransactionVersions = wallet?.adapter.supportedTransactionVersions;
+  const drift_vault = 'DKocxJwJKebZoVDyisCiLwxrkthbnNVdrVnyoS6CG9xx';
+
+  const configureAndSendCurrentTransaction = async (
+    transaction: VersionedTransaction,
+    connection: Connection,
+    blockhashWithExpiryBlockHeight: BlockhashWithExpiryBlockHeight,
+    signTransaction: SignerWalletAdapterProps['signTransaction']
+  ) => {
+
+    const signed = await signTransaction(transaction);
+    const signature = await connection.sendRawTransaction(signed.serialize());
+    await connection.confirmTransaction({
+      blockhash: blockhashWithExpiryBlockHeight.blockhash,
+      lastValidBlockHeight: blockhashWithExpiryBlockHeight.lastValidBlockHeight,
+      signature
+    });
+    return signature;
+  };
 
   const handleDeposit = async () => {
     setLoading(true);
@@ -27,22 +51,89 @@ export default function VaultPage() {
       return;
     }
 
-    console.error("Wallet is connected", publicKey.toString());
+    console.log("Wallet is connected", publicKey.toString());
 
+    // let signature: TransactionSignature | undefined = undefined;
     try {
-      const recipientPubKey = new PublicKey('2kNBWVtUZHYXYEYHHnrhfxqH77LS7gPXGPs28NCSjtAe');
+      if (!publicKey) throw new Error('Wallet not connected!');
+      if (!supportedTransactionVersions) throw new Error("Wallet doesn't support versioned transactions!");
+      if (!supportedTransactionVersions.has(0)) throw new Error("Wallet doesn't support v0 transactions!");
+      if (!signTransaction) { throw new Error('signTransaction is undefined'); }
 
-      const transaction = new Transaction();
-      const sendSolInstruction = SystemProgram.transfer({
-        fromPubkey: publicKey,
-        toPubkey: recipientPubKey,
-        lamports: 0.0001 * LAMPORTS_PER_SOL,
+
+      console.log(`Sending ${amount} USDC from ${(publicKey.toString())} to ${(drift_vault)}.`)
+
+      const transactionInstructions: TransactionInstruction[] = [];
+      const associatedTokenFrom = await getAssociatedTokenAddress(
+        new PublicKey(USDC_MINT),
+        publicKey
+      );
+      const fromAccount = await getAccount(connection, associatedTokenFrom);
+      const associatedTokenTo = await getAssociatedTokenAddress(
+        new PublicKey(USDC_MINT),
+        new PublicKey(drift_vault)
+      );
+
+      if (!(await connection.getAccountInfo(associatedTokenTo))) {
+        transactionInstructions.push(
+          createAssociatedTokenAccountInstruction(
+            publicKey,
+            associatedTokenTo,
+            new PublicKey(drift_vault),
+            new PublicKey(USDC_MINT)
+          )
+        );
+      }
+      transactionInstructions.push(
+        createTransferInstruction(
+          fromAccount.address, // source
+          associatedTokenTo, // dest
+          publicKey,
+          Number(amount) * Math.pow(10, USDC_DECIMAL)
+        )
+      );
+
+      const blockhashResult = await connection.getLatestBlockhash();
+
+      const messagev0 = new TransactionMessage({
+        payerKey: publicKey,
+        recentBlockhash: blockhashResult.blockhash,
+        instructions: [
+          ...transactionInstructions
+        ],
+      }).compileToV0Message();
+
+      const transaction = new VersionedTransaction(messagev0);
+
+      const signature = await configureAndSendCurrentTransaction(
+        transaction,
+        connection,
+        blockhashResult,
+        signTransaction!
+      );
+
+      console.log('Transaction sent:', signature);
+
+
+      const response = await fetch('http://localhost:8000/deposit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_pubkey: publicKey.toString(),
+          amount: amount,
+          signature: signature
+        }),
       });
 
-      transaction.add(sendSolInstruction);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-      const signature = await sendTransaction(transaction, connection);
-      console.log(`Transaction signature: ${signature}`);
+      const data = await response.json();
+      console.log('Deposit successful:', data);
+
     } catch (error) {
       console.error("Transaction failed", error);
     } finally {
@@ -161,3 +252,4 @@ export default function VaultPage() {
     </main>
   );
 }
+

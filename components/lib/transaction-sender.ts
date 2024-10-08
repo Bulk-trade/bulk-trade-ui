@@ -2,6 +2,7 @@ import {
     BlockhashWithExpiryBlockHeight,
     Connection,
     TransactionExpiredBlockheightExceededError,
+    VersionedTransaction,
     VersionedTransactionResponse,
 } from "@solana/web3.js";
 import promiseRetry from "promise-retry";
@@ -20,16 +21,15 @@ const SEND_OPTIONS = {
 
 export async function versionedTransactionSenderAndConfirmationWaiter({
     connection,
-    liteConnection,
     serializedTransaction,
     blockhashWithExpiryBlockHeight,
 }: TransactionSenderAndConfirmationWaiterArgs): Promise<VersionedTransactionResponse | null> {
     const startTime = performance.now(); // Start timing before the function call
 
-    let txnConnection = liteConnection ?? connection;
+    let txnConnection = connection;
 
     const txid = await txnConnection.sendRawTransaction(
-        serializedTransaction
+        serializedTransaction,
     );
 
 
@@ -118,4 +118,24 @@ export async function versionedTransactionSenderAndConfirmationWaiter({
     console.log('transactionSenderAndConfirmationWaiter()', `Time taken: ${timeTaken} milliseconds`);
 
     return response;
+}
+
+export function handleTransactionResponse(transactionResponse: VersionedTransactionResponse | null, signature: string) {
+    // If no response is received, log an error and return
+    if (!transactionResponse) {
+        console.error("Transaction not confirmed");
+        return 0;
+    }
+
+    // If the transaction fails, log the error
+    if (transactionResponse.meta?.err) {
+        console.error(`Transaction Failed: ${JSON.stringify(transactionResponse.meta?.err)}`);
+        console.error(`https://solscan.io/tx/${signature}`);
+        return 0;
+    }
+
+    // If the transaction is successful, increment the successful transactions counter and log the transaction URL
+    //incrementSuccessfulTransactions();
+    console.log(`https://solscan.io/tx/${signature}`);
+    return 1;
 }

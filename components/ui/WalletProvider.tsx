@@ -24,7 +24,7 @@ export function ClientWalletProvider({ children }: { children: React.ReactNode }
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint={'https://bulk.rpcpool.com/1e245781-b06d-4601-b628-61babccfcfa2'}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {children}
