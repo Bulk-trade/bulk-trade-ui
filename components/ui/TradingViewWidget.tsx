@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     TradingView: any;
   }
 }
@@ -16,13 +17,11 @@ export default function TradingViewWidget() {
       onLoadScriptRef.current = createWidget;
 
       if (!tvScriptLoadingPromise) {
-        tvScriptLoadingPromise = new Promise((resolve) => {
+        tvScriptLoadingPromise = new Promise<void>((resolve) => {
           const script = document.createElement('script');
-          script.id = 'tradingview-widget-loading-script';
           script.src = 'https://s3.tradingview.com/tv.js';
           script.type = 'text/javascript';
-          script.onload = resolve;
-
+          script.onload = () => resolve();
           document.head.appendChild(script);
         });
       }

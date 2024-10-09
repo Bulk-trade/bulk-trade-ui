@@ -36,10 +36,16 @@
     "@types/promise-retry": "^1.1.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.14",
+    "eslint-config-next": "^14.2.15",
+    "eslint-plugin-react": "^7.37.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "eslintConfig": {
+    "extends": "next/core-web-vitals"
   }
 }
