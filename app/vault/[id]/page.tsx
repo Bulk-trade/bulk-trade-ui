@@ -5,21 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import MetricCard from '@/components/ui/MetricCard';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { BlockhashWithExpiryBlockHeight, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction, TransactionInstruction, TransactionMessage, TransactionSignature, VersionedTransaction } from '@solana/web3.js';
-import bs58 from 'bs58';
+import { BlockhashWithExpiryBlockHeight, Connection,PublicKey,TransactionInstruction, TransactionMessage,VersionedTransaction } from '@solana/web3.js';
+// import bs58 from 'bs58';
 import { USDC_DECIMAL, USDC_MINT } from '@/components/lib/utils';
-import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress, getOrCreateAssociatedTokenAccount } from '@solana/spl-token';
+import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress, } from '@solana/spl-token';
 import { SignerWalletAdapterProps } from '@solana/wallet-adapter-base';
-import { handleTransactionResponse, versionedTransactionSenderAndConfirmationWaiter } from '@/components/lib/transaction-sender';
+// import { handleTransactionResponse, versionedTransactionSenderAndConfirmationWaiter } from '@/components/lib/transaction-sender';
 
 const TradingViewWidget = dynamic(() => import('@/components/ui/TradingViewWidget'), { ssr: false });
 
 export default function VaultPage() {
 
-  const { publicKey, sendTransaction, signTransaction, wallet } = useWallet();
+  const { publicKey, signTransaction, wallet } = useWallet();
   const { connection } = useConnection();
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
@@ -149,12 +150,21 @@ export default function VaultPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <Card className="mb-8 bg-white-900 border-gray-800">
+      <Card className="mb-8 bg-white shadow-lg rounded-2xl py-4">
         <CardHeader>
-          <CardTitle className="text-2xl">Drift Vault Overview</CardTitle>
+          <CardTitle className="text-2xl">Vault Overview</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
+            <div>
+              <Image
+                src="/Drift logo.svg"
+                alt="Drift"
+                width={158}
+                height={300}
+                priority
+              />
+            </div>
             <div>
               <p className="text-sm text-white-400">TVL</p>
               <p className="text-2xl font-bold">$5,000,000</p>
@@ -175,11 +185,11 @@ export default function VaultPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <div className="lg:col-span-2">
-          <Card className="bg-white-900">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div>
+          <Card className="bg-white shadow-lg rounded-2xl">
             <CardContent>
-              <div className="h-[600px]">
+              <div className="h-[500px]">
                 <TradingViewWidget />
               </div>
             </CardContent>
@@ -187,58 +197,69 @@ export default function VaultPage() {
         </div>
         <div>
           <Tabs defaultValue="deposit">
-            <TabsList className="grid w-full grid-cols-2 bg-white-900">
+            <TabsList className="grid w-full grid-cols-2 text-xl">
               <TabsTrigger value="deposit">Deposit</TabsTrigger>
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
             </TabsList>
             <TabsContent value="deposit">
-              <Card className="bg-white-900 border-gray-800">
-                <CardContent className="pt-6">
+              {/* <Card className="bg-inherit">
+                <CardContent className="pt-6"> */}
+                <div className="pt-4">
                   <Input
                     placeholder="Amount"
-                    className="mb-4 bg-white-800 border-gray-700"
+                    type="number"
+                    className="mb-4 bg-white shadow-lg rounded-2xl border-none"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
+                   <div className="flex w-full items-center space-x-2">
+                   <Input type="" placeholder="vault address"
+                   className="w-full"
+                   />
                   <Button
-                    className="w-full bg-white text-black hover:bg-white-200"
+                    className="bg-black text-white"
                     onClick={handleDeposit}
                     disabled={loading}
                   >
                     {loading ? 'Processing...' : 'Deposit'}
                   </Button>
-                </CardContent>
-              </Card>
+                  </div>
+                  </div>
+                {/* </CardContent>
+              </Card> */}
             </TabsContent>
+
             <TabsContent value="withdraw">
-              <Card className="bg-white-900 border-gray-800">
-                <CardContent className="pt-6">
+           <div>
                   <Input
                     placeholder="Amount"
-                    className="mb-4 bg-white-800 border-gray-700"
+                    className="mb-4 bg-white"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
                   <Button
-                    className="w-full bg-white text-black hover:bg-white-200"
+                    className="w-full bg-black text-white hover:bg-white-200"
                     onClick={handleWithdraw}
                     disabled={loading}
                   >
                     {loading ? 'Processing...' : 'Withdraw'}
                   </Button>
-                </CardContent>
-              </Card>
+               </div>
             </TabsContent>
-          </Tabs>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          </Tabs>
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-8 pt-8 mt-6">
         <MetricCard title="Sharpe Ratio" value="2.5" />
         <MetricCard title="Orders" value="1,234" />
         <MetricCard title="Balances" value="$500,000" />
         <MetricCard title="Max Drawdown" value="-15%" />
       </div>
+
+
+        </div>
+      </div>
+
+     
 
       <Card className="bg-white-900 border-gray-800">
         <CardHeader>

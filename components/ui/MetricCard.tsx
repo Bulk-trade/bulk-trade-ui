@@ -8,9 +8,9 @@ interface MetricCardProps {
 
 const MetricCard: React.FC<MetricCardProps> = ({ title, value }) => {
   return (
-    <Card className="bg-gray-900 border-gray-800">
+    <Card className="bg-white shadow-lg rounded-2xl">
       <CardContent className="pt-6">
-        <p className="text-sm text-gray-400">{title}</p>
+        <p className="text-sm">{title}</p>
         <p className="text-2xl font-bold">{value}</p>
       </CardContent>
     </Card>

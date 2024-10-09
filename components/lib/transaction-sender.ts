@@ -2,7 +2,7 @@ import {
     BlockhashWithExpiryBlockHeight,
     Connection,
     TransactionExpiredBlockheightExceededError,
-    VersionedTransaction,
+   
     VersionedTransactionResponse,
 } from "@solana/web3.js";
 import promiseRetry from "promise-retry";
@@ -26,7 +26,7 @@ export async function versionedTransactionSenderAndConfirmationWaiter({
 }: TransactionSenderAndConfirmationWaiterArgs): Promise<VersionedTransactionResponse | null> {
     const startTime = performance.now(); // Start timing before the function call
 
-    let txnConnection = connection;
+    const txnConnection = connection;
 
     const txid = await txnConnection.sendRawTransaction(
         serializedTransaction,
