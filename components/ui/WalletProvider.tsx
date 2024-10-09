@@ -29,7 +29,7 @@ export function ClientWalletProvider({ children }: { children: React.ReactNode }
     <ConnectionProvider endpoint={'https://bulk.rpcpool.com/1e245781-b06d-4601-b628-61babccfcfa2'}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-        @typescript-eslint/no-unused-vars       
+             
           {children}
         </WalletModalProvider>
       </WalletProvider>
