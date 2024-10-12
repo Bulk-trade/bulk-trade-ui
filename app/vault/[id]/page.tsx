@@ -26,7 +26,7 @@ export default function VaultPage() {
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const supportedTransactionVersions = wallet?.adapter.supportedTransactionVersions;
-  const drift_vault = 'DKocxJwJKebZoVDyisCiLwxrkthbnNVdrVnyoS6CG9xx';
+  const drift_vault = '5yptsfFoHCPaE9jwRkrYSNzQ8khwLWbuS2oMdnLq9NPt';
 
   const configureAndSendCurrentTransaction = async (
     transaction: VersionedTransaction,
