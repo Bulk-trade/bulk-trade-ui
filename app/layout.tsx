@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${raleway.className}bg-custom-bg text-black`}>
+      <body className={`${raleway.className} bg-custom-bg text-black`}>
         <ClientWalletProvider>
           <Navbar />
           {children}

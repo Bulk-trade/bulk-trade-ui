@@ -29,10 +29,18 @@ const Navbar = () => {
         />
       </Link>
       <div className="flex items-center space-x-4">
-        <Link href="/" className="text-2xl text-black">Vaults</Link>
-          <WalletMultiButton />
-          {/* <Button variant="secondary" className="bg-purple-600 text-white hover:bg-purple-700">Select Wallet</Button> */}
-        </div>
+        <Link href="/" className="text-2xl text-black flex items-center">
+          <span className="mr-2">Vaults</span>
+          <Image
+            src="/Icon.svg"
+            alt="Vault"
+            width={20}
+            height={20}
+          />
+        </Link>
+        <WalletMultiButton className="bg-black text-white hover:bg-gray-800" />
+        {/* <Button variant="secondary" className="bg-purple-600 text-white hover:bg-purple-700">Select Wallet</Button> */}
+      </div>
       </div>
     </nav>
   );

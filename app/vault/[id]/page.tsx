@@ -167,19 +167,19 @@ export default function VaultPage() {
             </div>
             <div>
               <p className="text-sm text-white-400">TVL</p>
-              <p className="text-2xl font-bold">$5,000,000</p>
+              <p className="text-2xl font-bold">$5000</p>
             </div>
             <div>
               <p className="text-sm text-white-400">APY</p>
-              <p className="text-2xl font-bold text-green-500">16%</p>
+              <p className="text-2xl font-bold text-green-500">16.6%</p>
             </div>
             <div>
               <p className="text-sm text-white-400">Pairs</p>
-              <p className="text-xl">BTC/USD, ETH/USD</p>
+              <p className="text-xl">SOL/USD, TIA/USD</p>
             </div>
             <div>
-              <p className="text-sm text-white-400">24h Volume</p>
-              <p className="text-2xl font-bold">$10,000,000</p>
+              <p className="text-sm text-white-400">30day Volume</p>
+              <p className="text-2xl font-bold">$132,000</p>
             </div>
           </div>
         </CardContent>
@@ -206,7 +206,7 @@ export default function VaultPage() {
                 <CardContent className="pt-6"> */}
                 <div className="pt-4">
                   <Input
-                    placeholder="Amount"
+                    placeholder="Amount in usdc"
                     type="number"
                     className="mb-4 bg-white shadow-lg rounded-2xl border-none"
                     value={amount}
@@ -232,7 +232,7 @@ export default function VaultPage() {
             <TabsContent value="withdraw">
            <div>
                   <Input
-                    placeholder="Amount"
+                    placeholder="Amount in usdc"
                     className="mb-4 bg-white"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
