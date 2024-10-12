@@ -30,3 +30,9 @@
 body {
   @apply bg-custom-bg  text-foreground;
 }
+
+@layer base {
+  html {
+    font-family: var(--font-raleway), system-ui, sans-serif;
+  }
+}

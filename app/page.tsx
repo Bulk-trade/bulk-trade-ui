@@ -104,7 +104,7 @@ export default function Home() {
             <div>
                  <Image
                  src="/debridge logo.svg"
-                 alt="jup"
+                 alt="debridge"
                  width={158}
                  height={300}
                  priority
@@ -126,7 +126,7 @@ export default function Home() {
             </div>
             <div>
               <p className="text-sm text-gray-500">Pairs</p>
-              <p className="font-bold">BTC/USD, ETH/USD</p>
+              <p className="font-bold">SOL/USD, ETH/USD</p>
             </div>
         </div>
         <div className="flex justify-center md:justify-end">

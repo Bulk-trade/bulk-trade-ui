@@ -14,6 +14,7 @@ import { BlockhashWithExpiryBlockHeight, Connection,PublicKey,TransactionInstruc
 import { USDC_DECIMAL, USDC_MINT } from '@/components/lib/utils';
 import { createAssociatedTokenAccountInstruction, createTransferInstruction, getAccount, getAssociatedTokenAddress, } from '@solana/spl-token';
 import { SignerWalletAdapterProps } from '@solana/wallet-adapter-base';
+import Link from 'next/link';
 // import { handleTransactionResponse, versionedTransactionSenderAndConfirmationWaiter } from '@/components/lib/transaction-sender';
 
 const TradingViewWidget = dynamic(() => import('@/components/ui/TradingViewWidget'), { ssr: false });
@@ -175,7 +176,7 @@ export default function VaultPage() {
             </div>
             <div>
               <p className="text-sm text-white-400">Pairs</p>
-              <p className="text-xl">SOL/USD, TIA/USD</p>
+              <p className="text-xl">SOL/USD, BONK/USD APT/USD</p>
             </div>
             <div>
               <p className="text-sm text-white-400">30day Volume</p>
@@ -197,9 +198,15 @@ export default function VaultPage() {
         </div>
         <div>
           <Tabs defaultValue="deposit">
-            <TabsList className="grid w-full grid-cols-2 text-xl">
-              <TabsTrigger value="deposit">Deposit</TabsTrigger>
-              <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 text-xl bg-transparent">
+              <TabsTrigger value="deposit" className="flex items-center justify-center space-x-2 bg-transparent">
+                <span>Deposit</span>
+                <Image src="/deposit.svg" alt="Deposit" width={20} height={20} />
+              </TabsTrigger>
+              <TabsTrigger value="withdraw" className="flex items-center justify-center space-x-2 bg-transparent">
+                <span>Withdraw</span>
+                <Image src="/withdraw.svg" alt="Withdraw" width={20} height={20} />
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="deposit">
               {/* <Card className="bg-inherit">
@@ -214,6 +221,7 @@ export default function VaultPage() {
                   />
                    <div className="flex w-full items-center space-x-2">
                    <Input type="" placeholder="vault address"
+                   value={drift_vault}
                    className="w-full"
                    />
                   <Button
@@ -233,7 +241,7 @@ export default function VaultPage() {
            <div>
                   <Input
                     placeholder="Amount in usdc"
-                    className="mb-4 bg-white"
+                    className="mb-4 bg-white shadow-lg rounded-2xl border-none"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                   />
@@ -249,12 +257,16 @@ export default function VaultPage() {
 
           </Tabs>
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-8 pt-8 mt-6">
-        <MetricCard title="Sharpe Ratio" value="2.5" />
-        <MetricCard title="Orders" value="1,234" />
-        <MetricCard title="Balances" value="$500,000" />
-        <MetricCard title="Max Drawdown" value="-15%" />
+        <MetricCard title="Sharpe Ratio" value="1.5" />
+        <MetricCard title="Orders" value="153" />
+        <MetricCard title="Balances" value="$4,780" />
+        <MetricCard title="Max Drawdown" value="13.55%" />
       </div>
-
+<div>
+  <Link href="https://app.drift.trade/?authority=5yptsfFoHCPaE9jwRkrYSNzQ8khwLWbuS2oMdnLq9NPt">
+  <p> View vault on Drift</p>
+  </Link>
+</div>
 
         </div>
       </div>
@@ -267,10 +279,11 @@ export default function VaultPage() {
         </CardHeader>
         <CardContent>
           {/* Add risk analysis content here */}
-          <p>Detailed risk analysis and metrics will be displayed here.</p>
+          <p>Volatility Risk
+Vault is exposed to volatility risk because rapid and large price movements can impact its ability to buy or sell instrument at desired prices. High volatility can widen bid-ask spreads, reducing profitability for the vault.
+</p>
         </CardContent>
       </Card>
     </main>
   );
 }
-
