@@ -8,8 +8,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-
-// Remove or comment out the import if it's not being used
 // import { WalletMultiButtonDynamic } from '@solana/wallet-adapter-react-ui';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WalletMultiButtonDynamic = dynamic(

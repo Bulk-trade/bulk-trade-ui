@@ -2,13 +2,15 @@
 
 import type { Metadata } from 'next'
 // import { Inter } from 'next/font/google'
-import {Raleway} from 'next/font/google'
+import { Raleway } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/ui/Navbar'
 import { ClientWalletProvider } from '@/components/ui/WalletProvider'
 
-// const inter = Inter({ subsets: ['latin'] })
-const raleway = Raleway({ subsets: ['latin'] })
+const raleway = Raleway({ 
+  subsets: ['latin'],
+  variable: '--font-raleway',
+})
 export const metadata: Metadata = {
   title: 'BULK Vaults',
   description: 'Institutional grade market making meets consumer liquidity',
