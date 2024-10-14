@@ -259,7 +259,7 @@ export default function VaultPage() {
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-8 pt-8 mt-6">
         <MetricCard title="Sharpe Ratio" value="1.5" />
         <MetricCard title="Orders" value="153" />
-        <MetricCard title="Balances" value="$4,780" />
+        <MetricCard title="Balances" value="$4,940" />
         <MetricCard title="Max Drawdown" value="13.55%" />
       </div>
 <div>
