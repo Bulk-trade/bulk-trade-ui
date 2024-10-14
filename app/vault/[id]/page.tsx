@@ -117,15 +117,15 @@ export default function VaultPage() {
       console.log('Transaction sent:', signature);
 
 
-      const response = await fetch('http://localhost:8000/deposit', {
+      const response = await fetch('http://72.46.84.23:4000/collateral', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_pubkey: publicKey.toString(),
+          // user_pubkey: publicKey.toString(),
           amount: amount,
-          signature: signature
+          // signature: signature
         }),
       });
 
